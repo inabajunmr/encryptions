@@ -1,4 +1,4 @@
-package enctice
+package caesar
 
 import (
 	"errors"
