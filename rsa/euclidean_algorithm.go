@@ -1,6 +1,6 @@
 package rsa
 
-func gcd(a int, b int) int {
+func Gcd(a int, b int) int {
 
 	l := a
 	r := b
