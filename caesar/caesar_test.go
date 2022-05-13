@@ -44,13 +44,9 @@ func TestEncrypt_InvalidValue(t *testing.T) {
 // exception case
 
 func TestDecrypt_KeyIs0(t *testing.T) {
-	c, _ := Encrypt("ABC def", 0)
-	result, err := Decrypt(c, 0)
-	if err != nil {
-		t.Fatalf("failed test %#v", err)
-	}
-	if result != "ABC def" {
-		t.Fatalf("failed test. result is %v", result)
+	for i := 0; i < 25; i++ {
+		result, _ := Decrypt("YNRJKQNJXQNPJFSFWWTB", i)
+		println(result)
 	}
 }
 
