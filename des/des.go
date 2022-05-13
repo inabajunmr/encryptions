@@ -1,12 +1,18 @@
 package des
 
+import "fmt"
+
 func SubKeyGen(key []byte) [][]byte {
 	// step 1
+	// fmt.Printf("key:%08b\n", key)
+
 	c0, d0 := pg1(key)
+	// fmt.Printf("c0:%08b d0:%08b\n", c0, d0)
 
 	// step 2 & 3
 	c := [][]byte{c0}
 	d := [][]byte{d0}
+	var keys [][]byte
 	for i := 1; i <= 16; i++ /* step 3c */ {
 		// step 3a
 		cbefore := c[i-1]
@@ -15,22 +21,24 @@ func SubKeyGen(key []byte) [][]byte {
 		var shiftedD []byte
 		if i == 1 || i == 2 || i == 9 || i == 16 {
 			// shift 1
-			shiftedC = cbefore // TODO shift
-			shiftedD = dbefore
-
+			shiftedC = shiftLeftRotation(1, 28, cbefore)
+			shiftedD = shiftLeftRotation(1, 28, dbefore)
 		} else {
 			// shift 2
-			shiftedC = cbefore // TODO shift
-			shiftedD = dbefore
+			shiftedC = shiftLeftRotation(2, 28, cbefore)
+			shiftedD = shiftLeftRotation(2, 28, dbefore)
 		}
-		c[i] = shiftedC
-		d[i] = shiftedD
+		// fmt.Printf("c%v:%08b d%v:%08b\n", i, shiftedC, i, shiftedD)
+
+		c = append(c, shiftedC)
+		d = append(d, shiftedD)
 
 		// step 3b
+		keys = append(keys, pg2(c[i], d[i]))
 	}
 
 	// step 4
-	return nil
+	return keys
 }
 
 var PG1_ARRAY = []int{
@@ -45,10 +53,41 @@ var PG1_ARRAY = []int{
 
 func pg1(key []byte) ([]byte /* C0 */, []byte /* C1 */) {
 	var bits []bool
+
 	for i := 0; i < 56; i++ {
 		bits = append(bits, bit(PG1_ARRAY[i], key))
 	}
-	return bitsToBytes(bits[:28]), bitsToBytes(bits[29:])
+	printBits(bits)
+	return bitsToBytes(bits[:28]), bitsToBytes(bits[28:])
+}
+
+var PG2_ARRAY = []int{
+	14, 17, 11, 24, 1, 5,
+	3, 28, 15, 6, 21, 10,
+	23, 19, 12, 4, 26, 8,
+	16, 7, 27, 20, 13, 2,
+	41, 52, 31, 37, 47, 55,
+	30, 40, 51, 45, 33, 48,
+	44, 49, 39, 56, 34, 53,
+	46, 42, 50, 36, 29, 32}
+
+func pg2(c []byte, d []byte) []byte {
+	merged := append(c, d...)
+	var bits []bool
+	for i := 0; i < 48; i++ {
+		bits = append(bits, bit(PG2_ARRAY[i], merged))
+	}
+	return bitsToBytes(bits)
+}
+
+func shiftLeftRotation(shift int, length int, bytes []byte) []byte {
+	bits := bytesToBits(length, bytes)
+	shifted := bits[shift:]
+	remaining := bits[:shift]
+	for i := 0; i < shift; i++ {
+		shifted = append(shifted, remaining[i])
+	}
+	return bitsToBytes(shifted)
 }
 
 // get bit for index
@@ -75,6 +114,14 @@ func bit(index int, bytes []byte) bool {
 	return false
 }
 
+func bytesToBits(length int, bytes []byte) []bool {
+	var bits []bool
+	for i := 0; i < length; i++ {
+		bits = append(bits, bit(i, bytes))
+	}
+	return bits
+}
+
 // true, true, true, true, false, false, false, false To []byte(0b11110000)
 func bitsToBytes(bits []bool) []byte {
 	var bytes []byte
@@ -88,10 +135,26 @@ func bitsToBytes(bits []bool) []byte {
 				bytes = append(bytes, b)
 				b = 0b00000000
 			} else if len(bits)-1 == i {
+				b = b << (8 - (len(bits))%8)
 				bytes = append(bytes, b)
 			}
 		}
 		b = b << 1
 	}
 	return bytes
+}
+
+func printBits(bits []bool) {
+	fmt.Print("Bits:")
+	for i := 0; i < len(bits); i++ {
+		if bits[i] {
+			fmt.Print("1")
+		} else {
+			fmt.Print("0")
+		}
+		if i != 0 && (i+1)%8 == 0 {
+			fmt.Print(" ")
+		}
+	}
+	fmt.Println()
 }
