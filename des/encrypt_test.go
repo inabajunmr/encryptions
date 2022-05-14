@@ -9,26 +9,21 @@ func TestEncrypt(t *testing.T) {
 	// genkey
 	key := []byte("1234abcd")
 	subKeys := SubKeyGen(key)
-	t.Logf("subKeys: %v\n", subKeys)
 
 	// plain
 	plain := []byte("superman")
-	t.Logf("plain  :%08b\n", plain)
 
 	// encrypt
 	encrypt := Encrypt(plain, subKeys)
-	t.Logf("encrypt:%08b\n", encrypt)
 
 	// gen decrypt key
 	var reverseSubKeys [][]byte
 	for i := 15; i >= 0; i-- {
 		reverseSubKeys = append(reverseSubKeys, subKeys[i])
 	}
-	t.Logf("reverseSubKeys: %v\n", reverseSubKeys)
 
 	// decrypt
 	decrypt := Encrypt(encrypt, reverseSubKeys)
-	t.Logf("decrypt:%08b\n", decrypt)
 
 	// assertion
 	if !reflect.DeepEqual(plain, decrypt) {
