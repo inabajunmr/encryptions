@@ -4,15 +4,6 @@ import (
 	"testing"
 )
 
-func Test(t *testing.T) {
-	// key := []byte{0b11111111, 0b11111111, 0b11111111, 0b11111111, 0b11111111, 0b11111111, 0b11111111, 0b11111111}
-	c, _ := NewCipher([]byte("1234abcd"))
-	d := c.(*desCipher).subkeys
-	for i, v := range d {
-		t.Logf("%v:%08b\n", i, v)
-	}
-}
-
 func TestSubKeygen(t *testing.T) {
 	subKeys := SubKeyGen([]byte("1234abcd"))
 	for i, v := range subKeys {

@@ -64,7 +64,7 @@ var PG2_ARRAY = []int{
 	46, 42, 50, 36, 29, 32}
 
 func pg2(c []byte, d []byte) []byte {
-	merged := append(c, d...)
+	merged := bitsToBytes(append(bytesToBits(28, c), bytesToBits(28, d)...))
 	var bits []bool
 	for i := 0; i < 48; i++ {
 		bits = append(bits, bit(PG2_ARRAY[i]-1, merged))
