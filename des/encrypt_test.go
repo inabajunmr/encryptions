@@ -2,6 +2,11 @@ package des
 
 import "testing"
 
+func TestEncrypt(t *testing.T) {
+	subKeys := SubKeyGen([]byte("1234abcd"))
+	t.Log(Encrypt([]byte("superman"), subKeys))
+}
+
 func TestSBox(t *testing.T) {
 	result1 := sbox(bytesToBits(6, []byte{0b01100100}), S_BOX1)
 	if result1[0] != true || result1[1] != false || result1[2] != false || result1[3] != true {

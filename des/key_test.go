@@ -14,8 +14,6 @@ func Test(t *testing.T) {
 }
 
 func TestSubKeygen(t *testing.T) {
-	// 64 bit secret key
-	// key := []byte{0b11111111, 0b11111111, 0b11111111, 0b11111111, 0b11111111, 0b11111111, 0b11111111, 0b11111111}
 	subKeys := SubKeyGen([]byte("1234abcd"))
 	for i, v := range subKeys {
 		t.Logf("%v: %08b\n", i, v)

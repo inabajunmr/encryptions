@@ -88,13 +88,4 @@ func xor(a []byte, b []byte) []byte {
 		result = append(result, aval^bval)
 	}
 	return result
-	// abits := bytesToBits(a)
-	// bbits := bytesToBits(b)
-	// var bits []bool
-	// for i, abool := range abits {
-	// 	bbool := bbits[i]
-	// 	if
-
-	// }
-
 }

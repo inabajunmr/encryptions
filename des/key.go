@@ -2,10 +2,7 @@ package des
 
 func SubKeyGen(key []byte) [][]byte {
 	// step 1
-	// fmt.Printf("key:%08b\n", key)
-
 	c0, d0 := pg1(key)
-	// fmt.Printf("c0:%08b d0:%08b\n", c0, d0)
 
 	// step 2 & 3
 	c := [][]byte{c0}
@@ -26,8 +23,6 @@ func SubKeyGen(key []byte) [][]byte {
 			shiftedC = shiftLeftRotation(2, 28, cbefore)
 			shiftedD = shiftLeftRotation(2, 28, dbefore)
 		}
-		// fmt.Printf("c%v:%08b d%v:%08b\n", i, shiftedC, i, shiftedD)
-
 		c = append(c, shiftedC)
 		d = append(d, shiftedD)
 
@@ -53,7 +48,7 @@ func pg1(key []byte) ([]byte /* C0 */, []byte /* C1 */) {
 	var bits []bool
 
 	for i := 0; i < 56; i++ {
-		bits = append(bits, bit(PG1_ARRAY[i], key))
+		bits = append(bits, bit(PG1_ARRAY[i]-1, key))
 	}
 	printBits(bits)
 	return bitsToBytes(bits[:28]), bitsToBytes(bits[28:])
@@ -73,7 +68,7 @@ func pg2(c []byte, d []byte) []byte {
 	merged := append(c, d...)
 	var bits []bool
 	for i := 0; i < 48; i++ {
-		bits = append(bits, bit(PG2_ARRAY[i], merged))
+		bits = append(bits, bit(PG2_ARRAY[i]-1, merged))
 	}
 	return bitsToBytes(bits)
 }

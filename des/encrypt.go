@@ -11,8 +11,9 @@ func Encrypt(m []byte, keys [][]byte) []byte {
 	l := [][]byte{ip[4:]}
 
 	// step 4
-	for n := 1; /* step 1 */ 1 <= 16; n++ /* step 4d */ {
+	for n := 1; /* step 1 */ n <= 16; n++ /* step 4d */ {
 		// step 4a
+		fmt.Println(n)
 		y := roundFunction(r[n-1], keys[n-1])
 		// step 4b
 		ln := xor(l[n-1], y)
@@ -28,8 +29,23 @@ func Encrypt(m []byte, keys [][]byte) []byte {
 
 }
 
+var IP2_ARRAY = []int{
+	40, 8, 48, 16, 56, 24, 64, 32,
+	39, 7, 47, 15, 55, 23, 63, 31,
+	38, 6, 46, 14, 54, 22, 62, 30,
+	37, 5, 45, 13, 53, 21, 61, 29,
+	36, 4, 44, 12, 52, 20, 60, 28,
+	35, 3, 43, 11, 51, 19, 59, 27,
+	34, 2, 42, 10, 50, 18, 58, 26,
+	33, 1, 41, 9, 49, 17, 57, 25,
+}
+
 func ip2(b []byte) []byte {
-	panic("unimplemented")
+	var bits []bool
+	for i := 0; i < 64; i++ {
+		bits = append(bits, bit(IP2_ARRAY[i]-1, b))
+	}
+	return bitsToBytes(bits)
 }
 
 func roundFunction(x, key []byte) []byte {
@@ -49,9 +65,23 @@ func roundFunction(x, key []byte) []byte {
 	return y
 }
 
+var P_ARRAY = []int{
+	16, 7, 20, 21,
+	29, 12, 28, 17,
+	1, 15, 23, 26,
+	5, 18, 31, 10,
+	2, 8, 24, 14,
+	32, 27, 3, 9,
+	19, 13, 30, 6,
+	22, 11, 4, 25,
+}
+
 func p(xddd []byte) []byte {
-	// TODO
-	panic("unimplemented")
+	var bits []bool
+	for i := 0; i < 32; i++ {
+		bits = append(bits, bit(P_ARRAY[i]-1, xddd))
+	}
+	return bitsToBytes(bits)
 }
 
 var S_BOX1 = [][]byte{
@@ -152,7 +182,6 @@ func sbox(b []bool, sbox [][]byte) []bool {
 	if b[1] {
 		col += 8
 	}
-	fmt.Printf("row: %v col: %v b: %v sboxval: %v", row, col, b, sbox[row][col])
 	return bytesToBits(8, []byte{sbox[row][col]})[4:]
 }
 
@@ -170,7 +199,7 @@ var E_ARRAY = []int{
 func e(x []byte) []byte {
 	var bits []bool
 	for i := 0; i < 48; i++ {
-		bits = append(bits, bit(E_ARRAY[i], x))
+		bits = append(bits, bit(E_ARRAY[i]-1, x))
 	}
 	return bitsToBytes(bits)
 }
@@ -186,10 +215,10 @@ var IP1_ARRAY = []int{
 	63, 55, 47, 39, 31, 23, 15, 7,
 }
 
-func ip(key []byte) []byte {
+func ip(m []byte) []byte {
 	var bits []bool
 	for i := 0; i < 64; i++ {
-		bits = append(bits, bit(IP1_ARRAY[i], key))
+		bits = append(bits, bit(IP1_ARRAY[i]-1, m))
 	}
 	return bitsToBytes(bits)
 }
