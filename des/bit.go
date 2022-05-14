@@ -63,6 +63,7 @@ func bit(index int, bytes []byte) bool {
 	return false
 }
 
+// length=6, bytes=0b10101100, result=tftftt
 func bytesToBits(length int, bytes []byte) []bool {
 	var bits []bool
 	for i := 0; i < length; i++ {
