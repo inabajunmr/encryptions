@@ -50,7 +50,6 @@ func pg1(key []byte) ([]byte /* C0 */, []byte /* C1 */) {
 	for i := 0; i < 56; i++ {
 		bits = append(bits, bit(PG1_ARRAY[i]-1, key))
 	}
-	printBits(bits)
 	return bitsToBytes(bits[:28]), bitsToBytes(bits[28:])
 }
 

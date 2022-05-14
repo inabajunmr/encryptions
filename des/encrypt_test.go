@@ -1,10 +1,39 @@
 package des
 
-import "testing"
+import (
+	"reflect"
+	"testing"
+)
 
 func TestEncrypt(t *testing.T) {
-	subKeys := SubKeyGen([]byte("1234abcd"))
-	t.Log(Encrypt([]byte("superman"), subKeys))
+	// genkey
+	key := []byte("1234abcd")
+	subKeys := SubKeyGen(key)
+	t.Logf("subKeys: %v", subKeys)
+
+	// plain
+	plain := []byte("superman")
+	t.Logf("plain  :%v", plain)
+
+	// encrypt
+	encrypt := Encrypt(plain, subKeys)
+	t.Logf("encrypt:%v", encrypt)
+
+	// gen decrypt key
+	var reverseSubKeys [][]byte
+	for i := 15; i >= 0; i-- {
+		reverseSubKeys = append(reverseSubKeys, subKeys[i])
+	}
+	t.Logf("reverseSubKeys: %v", reverseSubKeys)
+
+	// decrypt
+	decrypt := Encrypt([]byte("superman"), reverseSubKeys)
+	t.Logf("decrypt:%v", decrypt)
+
+	// assertion
+	if !reflect.DeepEqual(plain, decrypt) {
+		t.Error("plain and decrypt aren't same.")
+	}
 }
 
 func TestSBox(t *testing.T) {

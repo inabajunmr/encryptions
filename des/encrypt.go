@@ -1,7 +1,5 @@
 package des
 
-import "fmt"
-
 func Encrypt(m []byte, keys [][]byte) []byte {
 	// step 2
 	ip := ip(m)
@@ -13,7 +11,6 @@ func Encrypt(m []byte, keys [][]byte) []byte {
 	// step 4
 	for n := 1; /* step 1 */ n <= 16; n++ /* step 4d */ {
 		// step 4a
-		fmt.Println(n)
 		y := roundFunction(r[n-1], keys[n-1])
 		// step 4b
 		ln := xor(l[n-1], y)
