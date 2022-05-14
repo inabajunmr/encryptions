@@ -5,8 +5,8 @@ func Encrypt(m []byte, keys [][]byte) []byte {
 	ip := ip(m)
 
 	// step 3
-	r := [][]byte{ip[:4]}
-	l := [][]byte{ip[4:]}
+	r := [][]byte{ip[4:]}
+	l := [][]byte{ip[:4]}
 
 	// step 4
 	for n := 1; /* step 1 */ n <= 16; n++ /* step 4d */ {
@@ -16,14 +16,18 @@ func Encrypt(m []byte, keys [][]byte) []byte {
 		ln := xor(l[n-1], y)
 		rn := r[n-1]
 		// step 4c
-		l = append(l, rn)
-		r = append(r, ln)
+		if n != 16 {
+			l = append(l, rn)
+			r = append(r, ln)
+		} else {
+			l = append(l, ln)
+			r = append(r, rn)
+		}
 	}
 
 	// step 5
-	c := ip2(append(l[15], r[15]...))
+	c := ip2(append(l[16], r[16]...))
 	return c
-
 }
 
 var IP2_ARRAY = []int{

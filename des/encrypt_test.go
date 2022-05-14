@@ -17,7 +17,7 @@ func TestEncrypt(t *testing.T) {
 
 	// encrypt
 	encrypt := Encrypt(plain, subKeys)
-	t.Logf("encrypt:%v", encrypt)
+	t.Logf("encrypt:%08b", encrypt)
 
 	// gen decrypt key
 	var reverseSubKeys [][]byte
