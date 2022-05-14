@@ -5,7 +5,8 @@ import (
 	"testing"
 )
 
-func TestEncrypt(t *testing.T) {
+func TestEncryptBlock(t *testing.T) {
+
 	// genkey
 	key := []byte("1234abcd")
 	subKeys := SubKeyGen(key)
@@ -14,7 +15,7 @@ func TestEncrypt(t *testing.T) {
 	plain := []byte("superman")
 
 	// encrypt
-	encrypt := Encrypt(plain, subKeys)
+	encrypt := EncryptBlock(plain, subKeys)
 
 	// gen decrypt key
 	var reverseSubKeys [][]byte
@@ -23,7 +24,7 @@ func TestEncrypt(t *testing.T) {
 	}
 
 	// decrypt
-	decrypt := Encrypt(encrypt, reverseSubKeys)
+	decrypt := EncryptBlock(encrypt, reverseSubKeys)
 
 	// assertion
 	if !reflect.DeepEqual(plain, decrypt) {

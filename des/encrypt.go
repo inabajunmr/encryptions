@@ -1,6 +1,6 @@
 package des
 
-func Encrypt(m []byte, keys [][]byte) []byte {
+func EncryptBlock(m []byte, keys [][]byte) []byte {
 	// step 2
 	ip := ip(m)
 
