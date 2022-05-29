@@ -2,6 +2,7 @@ package aes
 
 import (
 	"fmt"
+	"reflect"
 	"testing"
 )
 
@@ -17,5 +18,8 @@ func TestEncryptBlock(t *testing.T) {
 
 	decrypted := DecryptBlock(encrypted.ToByte(), SubKeyGen(key))
 	fmt.Printf("dec: %02x \n", decrypted.ToByte())
-	t.Error()
+
+	if !reflect.DeepEqual(input, decrypted.ToByte()) {
+		t.Error("plain and decrypted are not same.")
+	}
 }
