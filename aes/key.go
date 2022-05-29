@@ -1,7 +1,7 @@
 package aes
 
 // 128 bit key
-func SubKeyGen(key []byte) [][][]byte {
+func SubKeyGen(key []byte) []State {
 	// step 1
 	w := [][]byte{key[0:4], key[4:8], key[8:12], key[12:16]}
 
@@ -42,7 +42,12 @@ func SubKeyGen(key []byte) [][][]byte {
 		k = append(k, [][]byte{w[4*i], w[4*i+1], w[4*i+2], w[4*i+3]})
 	}
 
-	return k
+	var states []State
+	for _, v := range k {
+		states = append(states, State{v[0], v[1], v[2], v[3]})
+	}
+
+	return states
 }
 
 func rotWord(w []byte) []byte {
