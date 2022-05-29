@@ -44,7 +44,8 @@ func SubKeyGen(key []byte) []State {
 
 	var states []State
 	for _, v := range k {
-		states = append(states, State{v[0], v[1], v[2], v[3]})
+		s := FromByte2(v)
+		states = append(states, s)
 	}
 
 	return states

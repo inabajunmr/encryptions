@@ -1,14 +1,13 @@
 package aes
 
-func EncryptBlock(m []byte, k []State) [][]byte {
+import (
+	"encoding/binary"
+)
+
+func EncryptBlock(m []byte, k []State) State {
 	n := 10
 	// step 2
-	s := State{
-		m[:4],
-		m[4:8],
-		m[8:12],
-		m[12:16],
-	}
+	s := FromByte(m)
 
 	// step 3
 	s = addRoundKey(s, k[0])
@@ -27,15 +26,52 @@ func EncryptBlock(m []byte, k []State) [][]byte {
 
 		// step 4d
 		s = addRoundKey(s, k[i])
-
 	}
 
 	c := s
 	return c
 }
 
+// https://tex2e.github.io/blog/crypto/aes-mix-columns
 func mixColumns(s State) State {
-	// TODO https://tex2e.github.io/blog/crypto/aes-mix-columns
+	for i := 0; i < 4; i++ {
+		var t [4]byte
+		t[0] = dot(2, s[0][i]) ^ dot(3, s[1][i]) ^ s[2][i] ^ s[3][i]
+		t[1] = s[0][i] ^ dot(2, s[1][i]) ^ dot(3, s[2][i]) ^ s[3][i]
+		t[2] = s[0][i] ^ s[1][i] ^ dot(2, s[2][i]) ^ dot(3, s[3][i])
+		t[3] = dot(3, s[0][i]) ^ s[1][i] ^ s[2][i] ^ dot(2, s[3][i])
+		s[0][i] = t[0]
+		s[1][i] = t[1]
+		s[2][i] = t[2]
+		s[3][i] = t[3]
+	}
+	return s
+}
+
+// https://tex2e.github.io/blog/crypto/aes-mix-columns
+func dot(x, y byte) byte {
+	product := byte(0)
+	for mask := byte(0x01); mask != 0x00; mask <<= 1 {
+		if y&mask != 0x00 {
+			product ^= x
+		}
+		x = xtime(x)
+	}
+
+	return product
+}
+
+// https://tex2e.github.io/blog/crypto/aes-mix-columns
+func xtime(b byte) byte {
+	data := binary.LittleEndian.Uint16([]byte{b, 0})
+	x := data << 1
+	r := make([]byte, 8)
+	if x&0x100 != 0 {
+		binary.LittleEndian.PutUint16(r, x^0x1b)
+	} else {
+		binary.LittleEndian.PutUint16(r, x)
+	}
+	return r[0]
 }
 
 func shiftRows(s State) State {

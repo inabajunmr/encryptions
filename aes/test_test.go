@@ -1,7 +1,6 @@
 package aes
 
 import (
-	"encoding/binary"
 	"fmt"
 	"testing"
 )
@@ -22,18 +21,6 @@ func Test(t *testing.T) {
 	x8 := xtime(x7)
 	fmt.Printf("%02x\n", x8)
 	t.Error()
-}
-
-func xtime(b byte) byte {
-	data := binary.LittleEndian.Uint16([]byte{b, 0})
-	x := data << 1
-	r := make([]byte, 8)
-	if x&0x100 != 0 {
-		binary.LittleEndian.PutUint16(r, x^0x1b)
-	} else {
-		binary.LittleEndian.PutUint16(r, x)
-	}
-	return r[0]
 }
 
 func Test2(t *testing.T) {
